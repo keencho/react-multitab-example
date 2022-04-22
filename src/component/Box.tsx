@@ -21,14 +21,17 @@ const Box = (): JSX.Element => {
         {
           componentModelValue.map((component) => {
             return (
-              <Button
-                variant={component.key + component.sequence === getActiveComponentKeyAndSequence() ? 'primary' : 'dark'}
-                key={component.key + component.sequence}
-                style={{ marginRight: '5px', marginBottom: '5px' }}
-                onClick={() => RouterControlUtil.openComponent(component)}
-              >
-                {getTabName(component)}
-              </Button>
+              <div key={component.key + component.sequence} style={{ marginRight: '5px', marginBottom: '5px' }}>
+                <Button
+                  variant={component.key + component.sequence === getActiveComponentKeyAndSequence() ? 'primary' : 'dark'}
+                  onClick={() => RouterControlUtil.openComponent(component)}
+                >
+                  {getTabName(component)}
+                </Button>
+                <Button onClick={() => RouterControlUtil.closeComponent(component)} variant='danger' size="sm">
+                  닫기
+                </Button>
+              </div>
             )
           })
         }
@@ -38,7 +41,22 @@ const Box = (): JSX.Element => {
   
   const getComponent = (): JSX.Element => {
     if (componentModelValue.length === 0) return <>헤더에 있는 메뉴를 눌러보세요~</>;
-    return getActiveComponent().component;
+    return (
+      <>
+        {
+          componentModelValue.map(component => {
+            return (
+              <div
+                style={{ display: component.show ? 'block' : 'none' }}
+                key={component.key + component.sequence}
+              >
+                {component.component}
+              </div>
+            )
+          })
+        }
+      </>
+    )
   }
   
   const getActiveComponentKey = (): string => {

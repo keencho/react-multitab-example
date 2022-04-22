@@ -8,11 +8,9 @@ import {RecoilRoot} from 'recoil';
 import RecoilNexus from '@/recoil/RecoilNexus';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RecoilRoot>
-      <RecoilNexus />
-      <Header />
-      <Box />
-    </RecoilRoot>
-  </React.StrictMode>
+  <RecoilRoot>
+    <RecoilNexus />
+    <Header />
+    <Box />
+  </RecoilRoot>
 )

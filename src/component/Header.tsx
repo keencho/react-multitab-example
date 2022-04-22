@@ -17,7 +17,7 @@ const Header = (): JSX.Element => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link onClick={() => controlComponent(<IndexPage />, true)}>index</Nav.Link>
+            <Nav.Link onClick={() => controlComponent(<IndexPage name="홍길동" age={20} />, true)}>index</Nav.Link>
             <Nav.Link onClick={() => controlComponent(<V1Page />)}>v1</Nav.Link>
             <Nav.Link onClick={() => controlComponent(<V2Page />, true)}>v2</Nav.Link>
           </Nav>

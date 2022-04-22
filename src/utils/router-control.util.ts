@@ -57,11 +57,52 @@ export default class RouterControlUtil {
   
   static openComponent = (component: RouterComponentModel) => {
     const value: RouterComponentModel[] = getRecoil(this.atom)
-    console.log(component);
     
     setRecoil(this.atom, [ ...value.map((v) => {
-      return { ...v, show: v.key + v.sequence === component.key + component.sequence }
+      return { ...v, show: this.isUniqueKeyEqual(v, component) }
     })])
+  }
+  
+  static closeComponent = (component: RouterComponentModel) => {
+    let value: RouterComponentModel[] = getRecoil(this.atom);
+    const activeComponent: RouterComponentModel | undefined = value.find(v => v.show && this.isUniqueKeyEqual(component, v));
+    const activeComponentIdx: number = value.findIndex(v => this.isUniqueKeyEqual(component, v));
+    
+    // 닫으려는 컴포넌트가 활성화된 컴포넌트라면 맨 앞에있는 컴포넌트를 활성 상태로 만든다 (0이라면 1)
+    if (value.length > 1) {
+      if (activeComponent !== undefined) {
+        if (this.isUniqueKeyEqual(activeComponent, component)) {
+          value = value.map((v, idx) => {
+            return { ...v, show: (activeComponentIdx === 0 ? (idx === 1) : idx === 0) }
+          })
+        }
+      }
+    }
+    
+    let filteredValue = value.filter(v => !this.isUniqueKeyEqual(v, component));
+    
+    // 시퀀스 재정렬
+    if (filteredValue.length > 0) {
+      filteredValue = filteredValue.map(v => {
+        // 지워진 컴포넌트의 시퀀스보다 큰 시퀀스를 가진 컴포넌트
+        if (v.key === component.key && v.sequence > component.sequence) {
+          return { ...v, sequence: v.sequence - 1 };
+        }
+        return v;
+      });
+    }
+    
+    console.log(filteredValue)
+    
+    setRecoil(this.atom, filteredValue)
+  }
+  
+  private static isUniqueKeyEqual = (componentOne: RouterComponentModel, componentTwo: RouterComponentModel): boolean => {
+    return this.getUniqueKey(componentOne) === this.getUniqueKey(componentTwo);
+  }
+  
+  private static getUniqueKey = (component: RouterComponentModel) => {
+    return component.key + component.sequence;
   }
   
   private static generateComponentModel = (component: JSX.Element): RouterComponentModel => {
