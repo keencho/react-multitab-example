@@ -20,9 +20,9 @@ export default class RouterControlUtil {
     //////////////////// 중복탭을 허용하지 않는 경우 ////////////////////
     if (allowDuplicateTab !== true) {
       // 만약 이미 recoil에 저장된 컴포넌트가 있다면 해당 컴포넌트의 show를 true로 세팅하고 끝낸다.
-      if (value.some(v => v.key === component.type.name)) {
+      if (value.some(v => v.name === component.type.name)) {
           setRecoil(this.atom, [ ...value.map(v => {
-            return { ...v, show: v.key === component.type.name};
+            return { ...v, show: v.name === component.type.name};
           })
         ]);
         return;
@@ -32,6 +32,7 @@ export default class RouterControlUtil {
       setRecoil(this.atom, [ ...value.map(v => {
         return { ...v, show: false }
       }), this.generateComponentModel(component) ]);
+      
       return;
     }
   
@@ -39,7 +40,7 @@ export default class RouterControlUtil {
     const componentModel: RouterComponentModel = this.generateComponentModel(component);
   
     // 중복탭을 허용하는경우 마지막 시퀀스를 찾아서 새롭게 만들 탭의 시퀀스를 +1 시켜줘야 한다.
-    const filteredList = value.filter(v => v.key === component.type.name);
+    const filteredList = value.filter(v => v.name === component.type.name);
     if (filteredList.length === 0) {
       setRecoil(this.atom, [ ...value.map(v => {
         return { ...v, show: false }
@@ -85,14 +86,12 @@ export default class RouterControlUtil {
     if (filteredValue.length > 0) {
       filteredValue = filteredValue.map(v => {
         // 지워진 컴포넌트의 시퀀스보다 큰 시퀀스를 가진 컴포넌트
-        if (v.key === component.key && v.sequence > component.sequence) {
+        if (v.name === component.name && v.sequence > component.sequence) {
           return { ...v, sequence: v.sequence - 1 };
         }
         return v;
       });
     }
-    
-    console.log(filteredValue)
     
     setRecoil(this.atom, filteredValue)
   }
@@ -102,12 +101,13 @@ export default class RouterControlUtil {
   }
   
   private static getUniqueKey = (component: RouterComponentModel) => {
-    return component.key + component.sequence;
+    return component.name + component.sequence;
   }
   
   private static generateComponentModel = (component: JSX.Element): RouterComponentModel => {
     return {
-      key: component.type.name,
+      name: component.type.name,
+      uniqueKey: crypto.randomUUID(),
       component: component,
       show: true,
       sequence: 1

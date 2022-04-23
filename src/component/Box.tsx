@@ -9,11 +9,11 @@ const Box = (): JSX.Element => {
   
   const getHeader = (): JSX.Element => {
     const getTabName = (component: RouterComponentModel): string => {
-      if (componentModelValue.filter(v => v.key === component.key).length > 1) {
-        return `${component.key} (${component.sequence})`;
+      if (componentModelValue.filter(v => v.name === component.name).length > 1) {
+        return `${component.name} (${component.sequence})`;
       }
       
-      return component.key;
+      return component.name;
     }
     
     return (
@@ -21,9 +21,9 @@ const Box = (): JSX.Element => {
         {
           componentModelValue.map((component) => {
             return (
-              <div key={component.key + component.sequence} style={{ marginRight: '5px', marginBottom: '5px' }}>
+              <div key={component.uniqueKey} style={{ marginRight: '5px', marginBottom: '5px' }}>
                 <Button
-                  variant={component.key + component.sequence === getActiveComponentKeyAndSequence() ? 'primary' : 'dark'}
+                  variant={component.uniqueKey === getActiveComponentKeyAndSequence() ? 'primary' : 'dark'}
                   onClick={() => RouterControlUtil.openComponent(component)}
                 >
                   {getTabName(component)}
@@ -48,7 +48,7 @@ const Box = (): JSX.Element => {
             return (
               <div
                 style={{ display: component.show ? 'block' : 'none' }}
-                key={component.key + component.sequence}
+                key={component.uniqueKey}
               >
                 {component.component}
               </div>
@@ -60,19 +60,20 @@ const Box = (): JSX.Element => {
   }
   
   const getActiveComponentKey = (): string => {
-    return getActiveComponent().key;
+    return getActiveComponent().name;
   }
   
   const getActiveComponentKeyAndSequence = (): string => {
     const ac = getActiveComponent();
-    return ac.key + ac.sequence;
+    return ac.uniqueKey;
   }
   
   const getActiveComponent = (): RouterComponentModel => {
     const componentModel = componentModelValue.filter(v => v.show);
     if (componentModel.length === 0) {
       return {
-        key: '',
+        name: '',
+        uniqueKey: '',
         component: <></>,
         sequence: 0,
         show: false
