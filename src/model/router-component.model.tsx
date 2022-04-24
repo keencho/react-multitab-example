@@ -2,6 +2,6 @@ export default interface RouterComponentModel {
   name: string,
   uniqueKey: string,
   sequence: number,
-  show: boolean,
+  active: boolean,
   component: JSX.Element
 }

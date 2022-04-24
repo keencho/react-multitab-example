@@ -5,7 +5,7 @@ import RouterComponentModel from '@/model/router-component.model';
 export default class RouterControlUtil {
   
   static MAX_TAB_SIZE = 15;
-  static MAX_TAB_MESSAGE = "최대 탭 갯수에 도달하였습니다.";
+  static MAX_TAB_MESSAGE = `최대 탭 갯수에 도달하였습니다. (${this.MAX_TAB_SIZE} 개)`;
   
   static atom = RouterComponentAtom;
   
@@ -22,7 +22,7 @@ export default class RouterControlUtil {
       // 만약 이미 recoil에 저장된 컴포넌트가 있다면 해당 컴포넌트의 show를 true로 세팅하고 끝낸다.
       if (value.some(v => v.name === component.type.name)) {
           setRecoil(this.atom, [ ...value.map(v => {
-            return { ...v, show: v.name === component.type.name};
+            return { ...v, active: v.name === component.type.name} as RouterComponentModel;
           })
         ]);
         return;
@@ -30,8 +30,8 @@ export default class RouterControlUtil {
       
       // 없다면 새로 추가한다.
       setRecoil(this.atom, [ ...value.map(v => {
-        return { ...v, show: false }
-      }), this.generateComponentModel(component) ]);
+        return { ...v, active: false } as RouterComponentModel
+      }), this.generateComponentModel(component)  ]);
       
       return;
     }
@@ -43,16 +43,16 @@ export default class RouterControlUtil {
     const filteredList = value.filter(v => v.name === component.type.name);
     if (filteredList.length === 0) {
       setRecoil(this.atom, [ ...value.map(v => {
-        return { ...v, show: false }
+        return { ...v, active: false } as RouterComponentModel
       }), componentModel ]);
       return;
     }
     
     const lastComponent = filteredList.sort((pv, nx) => pv.sequence - nx.sequence)[filteredList.length - 1];
     componentModel.sequence = lastComponent.sequence + 1;
-  
+   
     setRecoil(this.atom, [ ...value.map(v => {
-      return { ...v, show: false }
+      return { ...v, active: false } as RouterComponentModel
     }), componentModel ]);
   }
   
@@ -60,13 +60,13 @@ export default class RouterControlUtil {
     const value: RouterComponentModel[] = getRecoil(this.atom)
     
     setRecoil(this.atom, [ ...value.map((v) => {
-      return { ...v, show: this.isUniqueKeyEqual(v, component) }
+      return { ...v, active: this.isUniqueKeyEqual(v, component) } as RouterComponentModel
     })])
   }
   
   static closeComponent = (component: RouterComponentModel) => {
     let value: RouterComponentModel[] = getRecoil(this.atom);
-    const activeComponent: RouterComponentModel | undefined = value.find(v => v.show && this.isUniqueKeyEqual(component, v));
+    const activeComponent: RouterComponentModel | undefined = value.find(v => v.active && this.isUniqueKeyEqual(component, v));
     const activeComponentIdx: number = value.findIndex(v => this.isUniqueKeyEqual(component, v));
     
     // 닫으려는 컴포넌트가 활성화된 컴포넌트라면 맨 앞에있는 컴포넌트를 활성 상태로 만든다 (0이라면 1)
@@ -74,7 +74,7 @@ export default class RouterControlUtil {
       if (activeComponent !== undefined) {
         if (this.isUniqueKeyEqual(activeComponent, component)) {
           value = value.map((v, idx) => {
-            return { ...v, show: (activeComponentIdx === 0 ? (idx === 1) : idx === 0) }
+            return { ...v, active: (activeComponentIdx === 0 ? (idx === 1) : idx === 0) } as RouterComponentModel
           })
         }
       }
@@ -87,9 +87,9 @@ export default class RouterControlUtil {
       filteredValue = filteredValue.map(v => {
         // 지워진 컴포넌트의 시퀀스보다 큰 시퀀스를 가진 컴포넌트
         if (v.name === component.name && v.sequence > component.sequence) {
-          return { ...v, sequence: v.sequence - 1 };
+          return { ...v, sequence: v.sequence - 1 } as RouterComponentModel;
         }
-        return v;
+        return v ;
       });
     }
     
@@ -109,8 +109,8 @@ export default class RouterControlUtil {
       name: component.type.name,
       uniqueKey: crypto.randomUUID(),
       component: component,
-      show: true,
+      active: true,
       sequence: 1
-    }
+    } as RouterComponentModel
   }
 }
