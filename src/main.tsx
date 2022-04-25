@@ -6,11 +6,15 @@ import Header from '@/component/Header';
 import TabComponent from '@/component/TabComponent';
 import {RecoilRoot} from 'recoil';
 import RecoilNexus from '@/recoil/RecoilNexus';
+import {HTML5Backend} from 'react-dnd-html5-backend';
+import {DndProvider} from 'react-dnd';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <RecoilRoot>
     <RecoilNexus />
     <Header />
-    <TabComponent />
+    <DndProvider backend={HTML5Backend}>
+      <TabComponent />
+    </DndProvider>
   </RecoilRoot>
 )

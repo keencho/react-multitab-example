@@ -18,7 +18,7 @@ const IndexPage = (props: Props): JSX.Element => {
   
   return (
     <>
-      ※ 중복탭을 허용하는 탭입니다.※<br /><br />
+      ※ 중복을 허용하는 탭입니다.※<br /><br />
       props test ----- name: {props.name} / age: {props.age} <br />
       react lifecycle test ----- value : {value} <br />
       <button onClick={() => setValue(value + 1)}>클릭</button>

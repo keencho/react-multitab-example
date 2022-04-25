@@ -1,5 +1,5 @@
 export default interface RouterComponentModel {
-  name: string,
+  displayName: string,
   uniqueKey: string,
   sequence: number,
   active: boolean,

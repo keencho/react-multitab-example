@@ -3,7 +3,7 @@ import React from 'react';
 const V2Page = (): JSX.Element => {
   return (
     <>
-      ※ 중복탭을 허용하는 탭입니다.※<br /><br />
+      ※ 중복을 허용하는 탭입니다.※<br /><br />
       v2
     </>
   )
