@@ -8,7 +8,6 @@ export default class RouterControlUtil {
   static MAX_TAB_MESSAGE = `최대 탭 갯수에 도달하였습니다. (${this.MAX_TAB_SIZE} 개)`;
   
   static atom = RouterComponentAtom;
-  static recoilData = getRecoil(this.atom);
   
   // 컴포넌트 저장 & 업데이트
   static saveOrUpdateComponent = (component: JSX.Element, allowDuplicateTab?: boolean) => {
