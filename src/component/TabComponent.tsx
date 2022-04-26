@@ -13,7 +13,10 @@ const TabComponent = (): JSX.Element => {
   
   // 보여줘야할 컴포넌트 불러오기
   const getActiveComponent = (): JSX.Element => {
-    if (componentModelValue.length === 0) return <>Click menu to load component!</>;
+    if (componentModelValue.length === 0) {
+      return <></>;
+    }
+    
     return (
       <>
         {
